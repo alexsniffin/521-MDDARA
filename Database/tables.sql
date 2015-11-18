@@ -2,9 +2,11 @@ CREATE TABLE Users (
 	User_ID INT PRIMARY KEY IDENTITY(1,1),
 	Name CHAR(32),
 	Address CHAR(32),
+	SSN INT CHECK(SSN <= 999999999 AND SSN >= 0),
 	Phone INT,
 	DOB DATE -- Age should be > 0 (non future date) and < 130
 );
+
 CREATE TABLE Patients (
 	User_ID INT REFERENCES Users(User_ID),
 	Provider CHAR(32),

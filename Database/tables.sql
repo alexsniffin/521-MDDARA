@@ -57,7 +57,7 @@ CREATE TABLE Risks (
 	Doctor_ID INT REFERENCES Users(User_ID),
 	Patient_ID INT REFERENCES Users(User_ID),
 	Com_ID INT REFERENCES Compound(Com_ID),
-	Severity INT CHECK(Severity=0 OR Severity=1 OR Severity=2) --Limit to 0 (low), 1 (mid), and 2 (high)  
+	Severity INT CHECK(Severity=0 OR Severity=1 OR Severity=2 OR Severity=3) --Limit to 0 (none), 1 (low), 2 (med), and 3 (high)
 );
 CREATE TABLE Results (
 	Result_ID INT PRIMARY KEY IDENTITY(1,1),

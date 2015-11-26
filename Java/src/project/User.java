@@ -1,5 +1,9 @@
 package project;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import project.connection.DatabaseCon;
 
 /**
@@ -20,8 +24,8 @@ public class User {
 	/**
 	 * Username
 	 */
-	private String username;
-	
+	private String username, name, title;
+
 	/**
 	 * Id used for SQL calls
 	 */
@@ -39,6 +43,33 @@ public class User {
 		this.setUsername(username);
 		this.setUserRights(userRights);
 		connection = new DatabaseCon(Config.IP, Config.PORT, Config.DB);
+	}
+	
+	public void getUserInfo() {
+		try {
+			Statement st = connection.getConnection().createStatement();
+			ResultSet rs = st.executeQuery("select u.Name, hc.Title, hc.Privileges from Users u, HCProf hc where u.User_ID = "+id+" and u.User_ID = hc.User_ID");
+			
+			while (rs.next()) {
+				name = rs.getString(1).replaceAll("\\s+","");
+				title = rs.getString(2).replaceAll("\\s+","");
+				userRights = rs.getInt(3);
+			}
+			System.out.println(name + ", " + title + ", " + id);
+			
+			rs.close();
+			st.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public int getUserRights() {

@@ -94,10 +94,13 @@ public class Login extends JFrame {
 							result = (rs.getString(1) != null) ? Integer.parseInt(rs.getString(1)) : 0;
 						}
 						
+						rs.close();
+						
 						if (result > 0 ) {
 							user.setId(result);
 							user.setUsername(txuser.getText());
-							gui.statusText("Logged in as " + user.getUsername() + " on MDDARA Database...");
+							user.getUserInfo();
+							gui.statusText("Logged in as " + user.getName() + " (" + user.getUsername() + ") on MDDARA Database...");
 							gui.menusEnabled(true);
 							setVisible(false);
 							dispose();
@@ -106,6 +109,7 @@ public class Login extends JFrame {
 									"Incorrect username or password!", "Sorry", JOptionPane.INFORMATION_MESSAGE);
 							user.getConnection().getConnection().close();
 							user.getConnection().setConnected(false);
+							gui.statusText("Currently in offline mode...");
 						}
 					
 						st.close();

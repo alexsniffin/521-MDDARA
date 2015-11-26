@@ -291,6 +291,17 @@ public class MainWindow extends JFrame {
 					
 				case "disconnect":
 					//Close connection with the database and disable menus
+					try {
+						user.getConnection().close();
+						user.getConnection().setConnected(false);
+						user = new User("Local", -1);
+						statusText("Currently in offline mode...");
+						menusEnabled(false);
+						JOptionPane.showMessageDialog(MainWindow.this, 
+								"Disconnected succesfully from MDDARA Database.", "Signed out", JOptionPane.INFORMATION_MESSAGE);
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
 					break;
 					
 				case "switchUser":

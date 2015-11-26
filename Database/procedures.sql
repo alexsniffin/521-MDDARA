@@ -3,6 +3,7 @@
 CREATE PROCEDURE NewPatient
 	@name CHAR(32),
 	@address CHAR(32),
+	@ssn INT,
 	@phone INT,
 	@dob DATE,
 	@prov CHAR(32),
@@ -15,7 +16,7 @@ CREATE PROCEDURE NewPatient
 	@recent DATE
 AS
 BEGIN
-	INSERT INTO Users VALUES (@name, @address, @phone, @dob);
+	INSERT INTO Users VALUES (@name, @address, @ssn, @phone, @dob);
 	INSERT INTO Patients VALUES (SCOPE_IDENTITY(), @prov, @gender, @height, @weight, @race, @blood, @insur, @recent);
 END;
 
@@ -24,6 +25,7 @@ END;
 CREATE PROCEDURE NewHCProf
 	@name CHAR(32),
 	@address CHAR(32),
+	@ssn INT,
 	@phone INT,
 	@dob DATE,
 	@pass CHAR(32),
@@ -32,7 +34,7 @@ CREATE PROCEDURE NewHCProf
 	@priv BIT
 AS
 BEGIN
-	INSERT INTO Users VALUES (@name, @address, @phone, @dob);
+	INSERT INTO Users VALUES (@name, @address, @ssn, @phone, @dob);
 	INSERT INTO HCProf VALUES (SCOPE_IDENTITY(), @pass, @username, @title, @priv);
 END;
 
@@ -55,13 +57,13 @@ CREATE FUNCTION login
 RETURNS INT
 AS
 BEGIN
-	DECLARE @total INT;
+	DECLARE @id INT;
 
-	SET @total = (SELECT Count(User_ID)
+	SET @id = (SELECT User_ID
 	FROM HCProf u
 	WHERE u.Username = @user AND u.Password = @pass) 
 
-	RETURN @total;
+	RETURN @id;
 END;
 
 -- Create blank doc

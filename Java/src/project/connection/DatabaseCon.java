@@ -5,6 +5,7 @@ import java.sql.*;
 
 import javax.swing.JOptionPane;
 
+import project.Config;
 import project.gui.MainWindow;
 
 /**
@@ -33,7 +34,7 @@ public class DatabaseCon {
 	 * @param gui GUI pointer
 	 * @returns true if connection is successful
 	 */
-	public boolean setup(MainWindow gui) {
+	public boolean setup() {
 		try {
 			String connectionUrl = "jdbc:sqlserver://"+ip+":"+port+";" + "databaseName="+dbName+";integratedSecurity=true;";
 	        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -43,7 +44,7 @@ public class DatabaseCon {
 	        return true;
 		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(gui, 
+			JOptionPane.showMessageDialog(null, 
 				"Error connecting to the database, please check connection \n" + 
 				"or message an Administrator.", "Error", JOptionPane.ERROR_MESSAGE);
 			connected = false;

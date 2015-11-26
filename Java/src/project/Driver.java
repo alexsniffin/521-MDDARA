@@ -24,11 +24,8 @@ public class Driver {
         	//Set up user
         	User user = new User("Local", -1);
         	
-        	//Set up our database object but don't connect
-        	DatabaseCon connection = new DatabaseCon(Config.IP, Config.PORT, Config.DB);
-        	
         	//Setup our main gui window and pass user and connection
-        	MainWindow gui = new MainWindow(user, connection, Config.NAME, new Dimension(800, 600));
+        	MainWindow gui = new MainWindow(user, Config.NAME, new Dimension(800, 600)); 
         } catch (Exception e) {
             e.printStackTrace();
         }

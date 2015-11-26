@@ -39,11 +39,6 @@ public class MainWindow extends JFrame {
 	 */
 	private User user;
 	
-	/**
-	 * Pointer to our database connection
-	 */
-	private DatabaseCon connection;
-	
 	private JPanel body;
 	private JDesktopPane desktop;
 	private JMenuBar menu;
@@ -58,9 +53,8 @@ public class MainWindow extends JFrame {
 	 * @param title Title of the window
 	 * @param size Size of the window
 	 */
-	public MainWindow(User user, final DatabaseCon connection, String title, Dimension size) {
+	public MainWindow(final User user, String title, Dimension size) {
 		this.user = user;
-		this.connection = connection;
 		this.setTitle(title);
 		this.setBackground(new Color(210, 210, 210));
 		this.setPreferredSize(size);
@@ -85,8 +79,8 @@ public class MainWindow extends JFrame {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		        try {
-		        	if (connection.isConnected())
-		        		connection.close();
+		        	if (user.getConnection().isConnected())
+		        		user.getConnection().close();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -263,15 +257,6 @@ public class MainWindow extends JFrame {
 	}
 	
 	/**
-	 * Set the pointer for the database connection
-	 * 
-	 * @param connection
-	 */
-	public void setDB(DatabaseCon connection) {
-		this.connection = connection;
-	}
-	
-	/**
 	 * Action Listener class
 	 * 
 	 * @author Alexander
@@ -284,8 +269,8 @@ public class MainWindow extends JFrame {
 			switch (e.getActionCommand()) {
 				case "exit":
 					try {
-						if (connection.isConnected())
-							connection.close();
+						if (user.getConnection().isConnected())
+							user.getConnection().close();
 					} catch (SQLException e1) {
 						e1.printStackTrace();
 					}
@@ -300,6 +285,8 @@ public class MainWindow extends JFrame {
 					
 				case "connect":
 					//Create a Login GUI box and set up a connection using the Login user, if logged in, enabled menus
+					Login login = new Login(MainWindow.this, user, "Login to Database", new Dimension(350, 200));
+					
 					break;
 					
 				case "disconnect":

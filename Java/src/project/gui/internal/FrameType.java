@@ -39,9 +39,11 @@ public abstract class FrameType extends JInternalFrame implements ActionListener
         super(name, true, true, true, true);
         
         this.user = user;
-        this.setSize(this.size = new Dimension(width, height));
+        this.setPreferredSize(this.size = new Dimension(width, height));
         this.setBounds(x, y, width, height);
         createComponants();
+        this.setVisible(true);
+        this.pack();
     }
 
 	/**

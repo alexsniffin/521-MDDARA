@@ -1,70 +1,63 @@
-package project.gui.internal;
+import java.awt.EventQueue;
 
-import project.User;
-
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.GridBagLayout;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
+import javax.swing.JLabel;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.Font;
 import javax.swing.JTextField;
 
-/**
- * Document View Window
- * 
- * @project 521_Project
- * @author Alexander Sniffin
- * @date Nov 25, 2015
- */
-public class Document extends FrameType {
-	
-	private int documentType;
+
+public class docview {
+
+	private JFrame frame;
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;
 
-	public Document(User user, String name, int x, int y, int width, int height, int documentType) {
-		super(user, name, x, y, width, height);
-		this.documentType = documentType;
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					docview window = new docview();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
 	/**
-	 * All GUI stuff goes here
+	 * Create the application.
 	 */
-	@Override
-	public void createComponants() {
-		
-		//Include menu bar with menu options we decussed
-		
-		//Include option for what type of document, upto 4 types
-		
-		//When type if picked, load in Compounds from compounds class that are required.. 
-		//Create an array for each documents required compounds so we know what to pull? (or enumeration?)
-		
-		//Include text fields for inputted values of each compound
-		
-		//Include a field for the patient name, and ssn (note the ssn is how we find the patient in our database)
-		
-		//When we save we want to first make sure the patient exists, if we're offline ignore this for saving locaclly
-		
-		this.setJMenuBar(createMenu());
-		
+	public docview() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 400, 500);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel panel = new JPanel();
+		frame.getContentPane().add(panel, BorderLayout.CENTER);
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{10, 10, 10, 10, 10, 10};
-		gbl_panel.rowHeights = new int[]{10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
+		gbl_panel.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
+		gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		gbl_panel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
@@ -145,12 +138,8 @@ public class Document extends FrameType {
 		panel.add(textField_2, gbc_textField_2);
 		textField_2.setColumns(10);
 		
-		this.add(panel);
-		
-	}
-	
-	public JMenuBar createMenu() {
 		JMenuBar menuBar = new JMenuBar();
+		frame.setJMenuBar(menuBar);
 		
 		JMenu mnFile = new JMenu("File");
 		mnFile.setMnemonic('F');
@@ -177,23 +166,6 @@ public class Document extends FrameType {
 		
 		JMenuItem mntmShowRisks = new JMenuItem("Show Risks");
 		mnView.add(mntmShowRisks);
-		
-		return menuBar;
 	}
 
-	/**
-	 * Database stuff goes here
-	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		try {
-			switch (e.getActionCommand()) {
-				//Switch through menu options
-			}
-			//Statement st = user.getConnection().getConnection().createStatement();
-			//st.close();
-		} catch (SQLException e1) {//ignore
-			//sqlError(e1.getMessage());
-		}
-	}
 }

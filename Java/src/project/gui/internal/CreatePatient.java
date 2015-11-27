@@ -56,9 +56,8 @@ public class CreatePatient extends FrameType {
 	 */
 	@Override
 	public void createComponants() {
-		JPanel innerPanel = new JPanel();
-		this.getRootPane().add(innerPanel);
 		
+		CreatePatient innerPanel = this;
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{10, 10, 10, 10, 10, 10};
 		gridBagLayout.rowHeights = new int[]{10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
@@ -275,6 +274,7 @@ public class CreatePatient extends FrameType {
 		try {
 			Statement st = user.getConnection().getConnection().createStatement();
 			
+			//create patient
 			
 			st.close();
 		} catch (SQLException e1) {

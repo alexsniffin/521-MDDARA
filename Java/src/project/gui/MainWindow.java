@@ -201,10 +201,11 @@ public class MainWindow extends JFrame {
 		database.add(connect); //If connected don't display
 		database.add(disconnect); //If not connected don't display
 		database.add(switchUser); //Display only if logged in
+		database.addSeparator();
+		database.add(createBlankDoc);
 		database.add(saveAll); //Display only if logged in
 		file.addSeparator();
 		file.add(createPatient);
-		file.add(createBlankDoc);
 		file.add(importFile);
 		file.addSeparator();
 		file.add(exit);
@@ -228,6 +229,7 @@ public class MainWindow extends JFrame {
 	 */
 	public void menusEnabled(boolean enabled) {
 		connect.setEnabled(!enabled);
+		createBlankDoc.setEnabled(enabled);
 		disconnect.setEnabled(enabled);
 		switchUser.setEnabled(enabled);
 		saveAll.setEnabled(enabled);
@@ -322,7 +324,12 @@ public class MainWindow extends JFrame {
 					break;
 					
 				case "createBlankDoc":
-					createFrame(new Document(user, "Blank Document", 10, 10, 350, 475));
+					String[] options = new String[] {"Doc1", "Doc2", "Doc3", "Doc4"};
+				    int response = JOptionPane.showOptionDialog(MainWindow.this, "Please pick a document format to use.", "Choose a Document",
+				        JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+				        null, options, options[0]);
+				    
+					createFrame(new Document(user, "Blank Document", 10, 10, 400, 500, response));
 					break;
 					
 				case "saveAll":

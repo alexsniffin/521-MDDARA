@@ -1,5 +1,6 @@
 package project.gui.internal;
 
+import project.User;
 import project.connection.DatabaseCon;
 
 import java.awt.Dimension;
@@ -11,16 +12,18 @@ import javax.swing.JOptionPane;
 /**
  * Parent class of all InternalFrame classes
  * 
- * @project Project 1-520
+ * @project Project 1-521
  * @author Alexander Sniffin
  * @date Apr 3, 2015
  */
 public abstract class FrameType extends JInternalFrame implements ActionListener {
 	
 	/**
-	 * Pointer to database connection
+	 * Pointer to user
 	 */
-	protected DatabaseCon connection;
+	protected User user;
+	
+	protected Dimension size;
 
 	/**
 	 * Sets up the new internal frame
@@ -32,12 +35,11 @@ public abstract class FrameType extends JInternalFrame implements ActionListener
 	 * @param width witdh of the window
 	 * @param height height of the window
 	 */
-	public FrameType(DatabaseCon connection, String name, int x, int y, int width, int height) {
+	public FrameType(User user, String name, int x, int y, int width, int height) {
         super(name, true, true, true, true);
         
-        this.connection = connection;
-        
-        this.setSize(new Dimension(width, height));
+        this.user = user;
+        this.setSize(this.size = new Dimension(width, height));
         this.setBounds(x, y, width, height);
         createComponants();
     }
@@ -47,13 +49,5 @@ public abstract class FrameType extends JInternalFrame implements ActionListener
 	 */
 	public abstract void createComponants();
 	
-	/**
-	 * Display an SQL error to the user
-	 * 
-	 * @param s Error string
-	 */
-	public void sqlError(String s) {
-		JOptionPane.showMessageDialog(this, "SQL Error: " + s, "Error", JOptionPane.ERROR_MESSAGE);
-	}
 	
 }

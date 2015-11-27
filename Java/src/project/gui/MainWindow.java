@@ -43,7 +43,7 @@ public class MainWindow extends JFrame {
 	private JDesktopPane desktop;
 	private JMenuBar menu;
 	private JMenu file, view, help, search, database;
-	private JMenuItem exit, about, connect, disconnect, switchUser, importFile, createPatient, saveAll, searchU, searchD, searchR;
+	private JMenuItem exit, about, connect, disconnect, switchUser, importFile, createPatient, createBlankDoc, saveAll, searchU, searchD, searchR;
 	private JLabel statusBar;
 	
 	/**
@@ -121,7 +121,8 @@ public class MainWindow extends JFrame {
 		disconnect = new JMenuItem("Disconnect from the Database", KeyEvent.VK_D);
 		switchUser = new JMenuItem("Switch Account", KeyEvent.VK_S);
 		importFile = new JMenuItem("Import Document", KeyEvent.VK_I);
-		createPatient = new JMenuItem("Create new Patient", KeyEvent.VK_P);
+		createPatient = new JMenuItem("Create New Patient", KeyEvent.VK_P);
+		createBlankDoc = new JMenuItem("Create Blank Document", KeyEvent.VK_B);
 		saveAll = new JMenuItem("Save All Documents", KeyEvent.VK_V);
 		
 		//VIEW
@@ -144,6 +145,7 @@ public class MainWindow extends JFrame {
 		switchUser.setToolTipText("Switch user account");
 		importFile.setToolTipText("Import a local file");
 		createPatient.setToolTipText("Create a new patient");
+		createBlankDoc.setToolTipText("Create a blank document");
 		saveAll.setToolTipText("Save all open documents");
 		
 		//VIEW
@@ -165,6 +167,7 @@ public class MainWindow extends JFrame {
 		switchUser.setActionCommand("switchUser");
 		importFile.setActionCommand("importFile");
 		createPatient.setActionCommand("createPatient");
+		createBlankDoc.setActionCommand("createBlankDoc");
 		saveAll.setActionCommand("saveAll");
 		
 		//VIEW
@@ -185,6 +188,7 @@ public class MainWindow extends JFrame {
 		switchUser.addActionListener(new GuiActions());
 		importFile.addActionListener(new GuiActions());
 		createPatient.addActionListener(new GuiActions());
+		createBlankDoc.addActionListener(new GuiActions());
 		saveAll.addActionListener(new GuiActions());
 		searchU.addActionListener(new GuiActions());
 		searchD.addActionListener(new GuiActions());
@@ -200,6 +204,7 @@ public class MainWindow extends JFrame {
 		database.add(saveAll); //Display only if logged in
 		file.addSeparator();
 		file.add(createPatient);
+		file.add(createBlankDoc);
 		file.add(importFile);
 		file.addSeparator();
 		file.add(exit);
@@ -285,7 +290,7 @@ public class MainWindow extends JFrame {
 					
 				case "connect":
 					//Create a Login GUI box and set up a connection using the Login user, if logged in, enabled menus
-					Login login = new Login(MainWindow.this, user, "Login to Database", new Dimension(350, 200));
+					Login login = new Login(MainWindow.this, user, "MDDARA Login Authentication", new Dimension(350, 200));
 					
 					break;
 					
@@ -313,7 +318,11 @@ public class MainWindow extends JFrame {
 					break;
 					
 				case "createPatient":
-					//Create a New Paitent GUI and register the patient to the database
+					createFrame(new CreatePatient(user, "Create New Patient", 10, 10, 360, 420));
+					break;
+					
+				case "createBlankDoc":
+					createFrame(new Document(user, "Blank Document", 10, 10, 350, 475));
 					break;
 					
 				case "saveAll":

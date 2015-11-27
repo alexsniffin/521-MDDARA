@@ -1,17 +1,11 @@
 package project.gui.internal;
 
-import project.connection.DatabaseCon;
+import project.User;
 
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 /**
  * Document View Window
@@ -22,8 +16,8 @@ import javax.swing.JTextField;
  */
 public class Document extends FrameType {
 
-	public Document(DatabaseCon connection, String name, int x, int y, int width, int height) {
-		super(connection, name, x, y, width, height);
+	public Document(User user, String name, int x, int y, int width, int height) {
+		super(user, name, x, y, width, height);
 	}
 
 	/**
@@ -31,24 +25,35 @@ public class Document extends FrameType {
 	 */
 	@Override
 	public void createComponants() {
-		this.setLayout(new FlowLayout());
+		this.setLayout(null);
 		
+		//Include menu bar with menu options we decussed
+		
+		//Include option for what type of document, upto 4 types
+		
+		//When type if picked, load in Compounds from compounds class that are required.. 
+		//Create an array for each documents required compounds so we know what to pull? (or enumeration?)
+		
+		//Include text fields for inputted values of each compound
+		
+		//Include a field for the patient name, and ssn (note the ssn is how we find the patient in our database)
+		
+		//When we save we want to first make sure the patient exists, if we're offline ignore this for saving locaclly
 		
 	}
 
 	/**
-	 * Database stuff does here
+	 * Database stuff goes here
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			Statement st = connection.getConnection().createStatement();
+			Statement st = user.getConnection().getConnection().createStatement();
 			
 			
 			st.close();
 		} catch (SQLException e1) {
-			sqlError(e1.getMessage());
+			//sqlError(e1.getMessage());
 		}
 	}
-
 }

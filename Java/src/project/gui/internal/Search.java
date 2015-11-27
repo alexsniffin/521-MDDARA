@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import project.User;
 import project.connection.DatabaseCon;
 
 /**
@@ -16,8 +17,8 @@ import project.connection.DatabaseCon;
  */
 public class Search extends FrameType {
 
-	public Search(DatabaseCon connection, String name, int x, int y, int width, int height) {
-		super(connection, name, x, y, width, height);
+	public Search(User user, String name, int x, int y, int width, int height) {
+		super(user, name, x, y, width, height);
 	}
 
 	/**
@@ -36,12 +37,12 @@ public class Search extends FrameType {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			Statement st = connection.getConnection().createStatement();
+			Statement st = user.getConnection().getConnection().createStatement();
 			
 			
 			st.close();
 		} catch (SQLException e1) {
-			sqlError(e1.getMessage());
+			//sqlError(e1.getMessage());
 		}
 	}
 

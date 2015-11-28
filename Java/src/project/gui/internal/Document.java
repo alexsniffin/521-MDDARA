@@ -29,6 +29,16 @@ import javax.swing.JTextField;
  */
 public class Document extends FrameType {
 	
+	/**
+	 * Holds the IDS to each compound of each of the 4 files
+	 */
+	private int[][] compounds = {
+			{0, 1, 3}, //Doc1
+			{4, 5, 6}, //Doc2
+			{7, 8, 9}, //Doc3
+			{10, 11, 12}  //Doc4
+	};
+	
 	private int documentType;
 	private JTextField textField;
 	private JTextField textField_1;
@@ -145,10 +155,17 @@ public class Document extends FrameType {
 		panel.add(textField_2, gbc_textField_2);
 		textField_2.setColumns(10);
 		
+		setDocType(panel);
+		
 		this.add(panel);
 		
 	}
 	
+	/**
+	 * Create menu bar
+	 * 
+	 * @return
+	 */
 	public JMenuBar createMenu() {
 		JMenuBar menuBar = new JMenuBar();
 		
@@ -179,6 +196,31 @@ public class Document extends FrameType {
 		mnView.add(mntmShowRisks);
 		
 		return menuBar;
+	}
+	
+	/**
+	 * Set up the unique document types compounds
+	 * 
+	 * @param panel
+	 */
+	public void setDocType(JPanel panel) {
+		switch (documentType) {
+			case 0:
+				//Doc1
+				break;
+				
+			case 1:
+				//Doc2
+				break;
+				
+			case 2:
+				//Doc3
+				break;
+				
+			case 3:
+				//Doc4
+				break;
+		}
 	}
 
 	/**

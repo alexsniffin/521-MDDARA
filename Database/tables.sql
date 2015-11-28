@@ -2,7 +2,7 @@ CREATE TABLE Users (
 	User_ID INT PRIMARY KEY IDENTITY(1,1),
 	Name CHAR(32),
 	Address CHAR(32),
-	SSN INT CHECK(SSN <= 999999999 AND SSN >= 0),
+	SSN INT UNIQUE CHECK(SSN <= 999999999 AND SSN >= 0),
 	Phone INT,
 	DOB DATE -- Age should be > 0 (non future date) and < 130
 );
@@ -13,7 +13,7 @@ CREATE TABLE Patients (
 	Gender CHAR(5) CHECK (Gender = 'Male' OR Gender = 'Female'),
 	Height INT CHECK(Height>0), --CM
 	Weight INT CHECK(Weight>0), -- LBS
-	Race CHAR(16),  CHECK(Race='African American' OR Race='Caucasian' OR Race= 'Native American' OR  Race='Hispanic' OR Race= 'OTHER'), --Add check for fixed selection of races
+	Race CHAR(16),  CHECK(Race='African American' OR Race='Caucasian' OR Race= 'Native American' OR  Race='Hispanic' OR Race= 'Asian' OR Race= 'OTHER'), --Add check for fixed selection of races
 	BloodType CHAR(3) CHECK (BloodType = 'A' OR BloodType = 'B' OR BloodType =  'AB' OR BloodType = 'O'),
 	Insurance CHAR(16), 
 	Recent_Visit DATE

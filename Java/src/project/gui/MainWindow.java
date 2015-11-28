@@ -320,7 +320,7 @@ public class MainWindow extends JFrame {
 					break;
 					
 				case "createPatient":
-					createFrame(new CreatePatient(user, "Create New Patient", 10, 10, 360, 420));
+					createFrame(new CreatePatient(user, "Create New Patient", 10, 10, 360, 520));
 					break;
 					
 				case "createBlankDoc":

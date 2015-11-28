@@ -2,6 +2,7 @@ package project.gui.internal;
 
 import project.User;
 import project.connection.DatabaseCon;
+import project.gui.MainWindow;
 
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
@@ -51,5 +52,11 @@ public abstract class FrameType extends JInternalFrame implements ActionListener
 	 */
 	public abstract void createComponants();
 	
-	
+	/**
+	 * Send a warning dialog message
+	 */
+	public void sendWarningDialog(String title, String message) {
+		JOptionPane.showMessageDialog(this, 
+				message, title, JOptionPane.INFORMATION_MESSAGE);
+	}
 }

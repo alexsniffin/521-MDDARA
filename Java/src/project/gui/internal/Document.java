@@ -1,5 +1,6 @@
 package project.gui.internal;
 
+import project.Config;
 import project.User;
 
 import java.awt.BorderLayout;
@@ -28,16 +29,6 @@ import javax.swing.JTextField;
  * @date Nov 25, 2015
  */
 public class Document extends FrameType {
-	
-	/**
-	 * Holds the IDS to each compound of each of the 4 files
-	 */
-	private int[][] compounds = {
-			{0, 1, 3}, //Doc1
-			{4, 5, 6}, //Doc2
-			{7, 8, 9}, //Doc3
-			{10, 11, 12}  //Doc4
-	};
 	
 	private int documentType;
 	private JTextField textField;
@@ -173,8 +164,8 @@ public class Document extends FrameType {
 		mnFile.setMnemonic('F');
 		menuBar.add(mnFile);
 		
-		JMenuItem mntmRefresh = new JMenuItem("Export");
-		mnFile.add(mntmRefresh);
+		JMenuItem mntmExport = new JMenuItem("Export Document");
+		mnFile.add(mntmExport);
 		
 		JMenuItem mntmSave = new JMenuItem("Save");
 		mnFile.add(mntmSave);
@@ -207,18 +198,30 @@ public class Document extends FrameType {
 		switch (documentType) {
 			case 0:
 				//Doc1
+				for (int i = 0; i < Config.COMPOUND_LIST[0].length; i++) {
+					//Create labels and text fields
+				}
 				break;
 				
 			case 1:
 				//Doc2
+				for (int i = 0; i < Config.COMPOUND_LIST[1].length; i++) {
+					//Create labels and text fields
+				}
 				break;
 				
 			case 2:
 				//Doc3
+				for (int i = 0; i < Config.COMPOUND_LIST[2].length; i++) {
+					//Create labels and text fields
+				}
 				break;
 				
 			case 3:
 				//Doc4
+				for (int i = 0; i < Config.COMPOUND_LIST[3].length; i++) {
+					//Create labels and text fields
+				}
 				break;
 		}
 	}

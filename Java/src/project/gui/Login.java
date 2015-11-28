@@ -100,6 +100,7 @@ public class Login extends JFrame {
 							user.setId(result);
 							user.setUsername(txuser.getText());
 							user.getUserInfo();
+							user.setStartSession(System.currentTimeMillis());
 							gui.statusText("Logged in as " + user.getName() + " (" + user.getUsername() + ") on MDDARA Database...");
 							gui.menusEnabled(true);
 							setVisible(false);
@@ -114,7 +115,6 @@ public class Login extends JFrame {
 					
 						st.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				} else {

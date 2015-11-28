@@ -31,5 +31,16 @@ public final class Config {
 			"MDDARA is a tool used to view and detect anomalies for patient data \n"
 			+ "and inform the Doctor or Nurse of the risk. \n"
 			+ "Created by Alexander Sniffin, Devin _, William Craft";
+	
+	/**
+	 * Static immutable data to hold the IDS to each compound of each of the 4 files,
+	 * this data is fixed and won't be needed to change.
+	 */
+	public static final int[][] COMPOUND_LIST = {
+			{0, 1, 3}, //Doc1
+			{4, 5, 6}, //Doc2
+			{7, 8, 9}, //Doc3
+			{10, 11, 12}  //Doc4
+	};
 			
 }

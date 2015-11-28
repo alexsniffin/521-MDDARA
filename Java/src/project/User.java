@@ -17,6 +17,16 @@ import project.connection.DatabaseCon;
 public class User {
 	
 	/**
+	 * How long should a login session be?
+	 */
+	public static final int SESSION_TIME = 1800000; //30 minutes
+	
+	/**
+	 * Time to hold the start of our session
+	 */
+	private long startSession;
+	
+	/**
 	 * Pointer to our database connection
 	 */
 	private DatabaseCon connection;
@@ -102,5 +112,13 @@ public class User {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public long getStartSession() {
+		return startSession;
+	}
+
+	public void setStartSession(long startSession) {
+		this.startSession = startSession;
 	}
 }

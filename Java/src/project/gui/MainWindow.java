@@ -1,6 +1,7 @@
 package project.gui;
 
 import project.Config;
+import project.Driver;
 import project.User;
 import project.connection.DatabaseCon;
 
@@ -37,8 +38,8 @@ public class MainWindow extends JFrame {
 	/**
 	 * Our user
 	 */
-	private User user;
-	
+	private static User user;
+
 	private JPanel body;
 	private JDesktopPane desktop;
 	private JMenuBar menu;
@@ -53,7 +54,7 @@ public class MainWindow extends JFrame {
 	 * @param title Title of the window
 	 * @param size Size of the window
 	 */
-	public MainWindow(final User user, String title, Dimension size) {
+	public MainWindow(User user, String title, Dimension size) {
 		this.user = user;
 		this.setTitle(title);
 		this.setBackground(new Color(210, 210, 210));
@@ -79,8 +80,8 @@ public class MainWindow extends JFrame {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		        try {
-		        	if (user.getConnection().isConnected())
-		        		user.getConnection().close();
+		        	if (MainWindow.user.getConnection().isConnected())
+		        		MainWindow.user.getConnection().close();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -202,10 +203,10 @@ public class MainWindow extends JFrame {
 		database.add(disconnect); //If not connected don't display
 		database.add(switchUser); //Display only if logged in
 		database.addSeparator();
+		database.add(createPatient);
 		database.add(createBlankDoc);
 		database.add(saveAll); //Display only if logged in
 		file.addSeparator();
-		file.add(createPatient);
 		file.add(importFile);
 		file.addSeparator();
 		file.add(exit);
@@ -229,6 +230,7 @@ public class MainWindow extends JFrame {
 	 */
 	public void menusEnabled(boolean enabled) {
 		connect.setEnabled(!enabled);
+		createPatient.setEnabled(enabled);
 		createBlankDoc.setEnabled(enabled);
 		disconnect.setEnabled(enabled);
 		switchUser.setEnabled(enabled);
@@ -261,6 +263,14 @@ public class MainWindow extends JFrame {
 	 */
 	public void statusText(String s) {
 		statusBar.setText(s);
+	}
+	
+	public static User getUser() {
+		return user;
+	}
+
+	public static void setUser(User user) {
+		MainWindow.user = user;
 	}
 	
 	/**
@@ -302,6 +312,7 @@ public class MainWindow extends JFrame {
 						user.getConnection().close();
 						user.getConnection().setConnected(false);
 						user = new User("Local", -1);
+						Driver.setUser(user);
 						statusText("Currently in offline mode...");
 						menusEnabled(false);
 						JOptionPane.showMessageDialog(MainWindow.this, 

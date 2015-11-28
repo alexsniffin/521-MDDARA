@@ -331,21 +331,11 @@ public class CreatePatient extends FrameType {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			/*
-			 	@name CHAR(32),
-				@address CHAR(32),
-				@ssn INT,
-				@phone INT,
-				@dob DATE,
-				@prov CHAR(32),
-				@gender CHAR(5),
-				@height INT,
-				@weight INT,
-				@race CHAR(16),
-				@blood CHAR(3),
-				@insur CHAR(16),
-				@recent DATE
-			 */
+			if (!user.getConnection().isConnected() || user.getConnection().getConnection().isClosed()) {
+				sendWarningDialog("Connection Error!", "It seems the connection has been terminated, please try logging back in.");
+				return;
+			}
+				
 			Statement st = user.getConnection().getConnection().createStatement();
 			
 			String genderSelected = getSelectedRadio(genders);
@@ -354,6 +344,8 @@ public class CreatePatient extends FrameType {
 			//Check nulls
 			//Check integers
 			//Check out of bounds
+			
+			boolean success = false;
 			
 			if (textField.getText().replaceAll("\\s+","").equals(""))
 				sendWarningDialog("Error", "Please enter a full name.");
@@ -383,10 +375,16 @@ public class CreatePatient extends FrameType {
 				sendWarningDialog("Error", "Please only enter a numeric value for height.");
 			else if (!isNumber(textField_2.getText()))
 				sendWarningDialog("Error", "Please only enter a numeric value for weight.");
-			else
+			else {
+				success = true;
 				st.execute("execute dbo.NewPatient '"+ textField.getText() +"', '"+ add.getText() +"', "+ ssn.getText()+", "+ phone.getText()+", NULL, NULL, "
 					+ "'"+ genderSelected +"', "+ textField_1.getText() +", "+ textField_2.getText() +", '"+ raceSelected +"', '"+ textField_3.getText() +"',"
 					+ " '"+ textField_4.getText() +"', NULL");
+			}
+			
+			//Exit out and leave the connection and window open till error is fixed by the user
+			if (!success)
+				return;
 			
 			JOptionPane.showMessageDialog(this, 
 					"Patient successfully created on the Database.", "Success!", JOptionPane.INFORMATION_MESSAGE);

@@ -42,7 +42,6 @@ public abstract class FrameType extends JInternalFrame implements ActionListener
         this.user = user;
         this.setPreferredSize(this.size = new Dimension(width, height));
         this.setBounds(x, y, width, height);
-        createComponants();
         this.setVisible(true);
         this.pack();
     }
@@ -55,8 +54,24 @@ public abstract class FrameType extends JInternalFrame implements ActionListener
 	/**
 	 * Send a warning dialog message
 	 */
-	public void sendWarningDialog(String title, String message) {
+	protected void sendWarningDialog(String title, String message) {
 		JOptionPane.showMessageDialog(this, 
 				message, title, JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	/**
+	 * Checks if a string is a number
+	 * 
+	 * @param s
+	 * @return
+	 */
+	protected boolean isNumber(String s) {
+		try {
+			Integer.parseInt(s);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

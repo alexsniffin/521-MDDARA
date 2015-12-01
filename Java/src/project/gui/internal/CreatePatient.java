@@ -54,6 +54,7 @@ public class CreatePatient extends FrameType {
 
 	public CreatePatient(User user, String name, int x, int y, int width, int height) {
 		super(user, name, x, y, width, height);
+        createComponants();
 	}
 
 	/**
@@ -407,15 +408,5 @@ public class CreatePatient extends FrameType {
             }
         }
 		return null;
-	}
-	
-	private boolean isNumber(String s) {
-		try {
-			Integer.parseInt(s);
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
 	}
 }

@@ -71,6 +71,7 @@ CREATE PROCEDURE newDoc
 	@documentID INT output, @doctorID INT, @SSN INT
 AS 
 BEGIN
+		SET NOCOUNT ON;
 		DECLARE @patientID INT; 
 		DECLARE @date DATE; -- From db
 		

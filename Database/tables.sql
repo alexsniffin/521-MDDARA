@@ -9,8 +9,7 @@ CREATE TABLE Users (
 
 CREATE TABLE Patients (
 	User_ID INT REFERENCES Users(User_ID),
-	Provider CHAR(32),
-	Gender CHAR(5) CHECK (Gender = 'Male' OR Gender = 'Female'),
+	Gender CHAR(6) CHECK (Gender = 'Male' OR Gender = 'Female'),
 	Height INT CHECK(Height>0), --CM
 	Weight INT CHECK(Weight>0), -- LBS
 	Race CHAR(16),  CHECK(Race='African American' OR Race='Caucasian' OR Race= 'Native American' OR  Race='Hispanic' OR Race= 'Asian' OR Race= 'OTHER'), --Add check for fixed selection of races
@@ -40,8 +39,9 @@ Doctor_ID INT REFERENCES Users(User_ID),
 );
 CREATE TABLE Documents (
 	Document_ID INT PRIMARY KEY IDENTITY(1,1),
-Doctor_ID INT REFERENCES Users(User_ID),
+	Doctor_ID INT REFERENCES Users(User_ID),
 	Patient_ID INT REFERENCES Users(User_ID),
+	DocumentType INT, 
 	DateCreated DATE -- Should not be a future date
 );
 CREATE TABLE Compound (

@@ -10,6 +10,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -31,13 +33,16 @@ import javax.swing.JTextField;
 public class Document extends FrameType {
 	
 	private int documentType;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
+	private JTextField patientField;
+	private JTextField ssnField;
+	private JTextField[] compoundFields;
+	private JLabel[] compoundLabels;
+	
 
 	public Document(User user, String name, int x, int y, int width, int height, int documentType) {
 		super(user, name, x, y, width, height);
 		this.documentType = documentType;
+        createComponants();
 	}
 
 	/**
@@ -45,29 +50,22 @@ public class Document extends FrameType {
 	 */
 	@Override
 	public void createComponants() {
-		
-		//Include menu bar with menu options we decussed
-		
-		//Include option for what type of document, upto 4 types
-		
-		//When type if picked, load in Compounds from compounds class that are required.. 
-		//Create an array for each documents required compounds so we know what to pull? (or enumeration?)
-		
-		//Include text fields for inputted values of each compound
-		
-		//Include a field for the patient name, and ssn (note the ssn is how we find the patient in our database)
-		
-		//When we save we want to first make sure the patient exists, if we're offline ignore this for saving locaclly
-		
+		compoundFields = new JTextField[Config.COMPOUND_LIST[documentType].length];
+		compoundLabels = new JLabel[Config.COMPOUND_LIST[documentType].length];
 		this.setJMenuBar(createMenu());
-		
-		
 		JPanel panel = new JPanel();
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{10, 10, 10, 10, 10, 10};
-		gbl_panel.rowHeights = new int[]{10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
-		gbl_panel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.columnWidths = new int[]{10, 10, 10, 10, 10, 10, 10};
+		int rowHeights[] = new int[10 + Config.COMPOUND_LIST[documentType].length];
+		double[] rowWeights = new double[10 + Config.COMPOUND_LIST[documentType].length];
+		for (int i = 0; i < rowHeights.length; i++) {
+			rowHeights[i] = 10;
+			rowWeights[i] = 0.0;
+		}
+		rowWeights[10 + Config.COMPOUND_LIST[documentType].length - 1] = Double.MIN_VALUE;
+		gbl_panel.rowHeights = rowHeights;
+		gbl_panel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.rowWeights = rowWeights;
 		panel.setLayout(gbl_panel);
 		
 		JLabel lblPatientInformation = new JLabel("Patient Information");
@@ -95,14 +93,14 @@ public class Document extends FrameType {
 		gbc_lblPatientName.gridy = 3;
 		panel.add(lblPatientName, gbc_lblPatientName);
 		
-		textField = new JTextField();
+		patientField = new JTextField();
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField.insets = new Insets(0, 0, 5, 5);
 		gbc_textField.gridx = 3;
 		gbc_textField.gridy = 3;
-		panel.add(textField, gbc_textField);
-		textField.setColumns(10);
+		panel.add(patientField, gbc_textField);
+		patientField.setColumns(10);
 		
 		JLabel lblSsn = new JLabel("SSN:");
 		GridBagConstraints gbc_lblSsn = new GridBagConstraints();
@@ -112,14 +110,14 @@ public class Document extends FrameType {
 		gbc_lblSsn.gridy = 4;
 		panel.add(lblSsn, gbc_lblSsn);
 		
-		textField_1 = new JTextField();
+		ssnField = new JTextField();
 		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
 		gbc_textField_1.insets = new Insets(0, 0, 5, 5);
 		gbc_textField_1.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField_1.gridx = 3;
 		gbc_textField_1.gridy = 4;
-		panel.add(textField_1, gbc_textField_1);
-		textField_1.setColumns(10);
+		panel.add(ssnField, gbc_textField_1);
+		ssnField.setColumns(10);
 		
 		JLabel lblCompoundInformation = new JLabel("Compound Information");
 		lblCompoundInformation.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -128,23 +126,6 @@ public class Document extends FrameType {
 		gbc_lblCompoundInformation.gridx = 1;
 		gbc_lblCompoundInformation.gridy = 6;
 		panel.add(lblCompoundInformation, gbc_lblCompoundInformation);
-		
-		JLabel lblCompound = new JLabel("Compound1");
-		GridBagConstraints gbc_lblCompound = new GridBagConstraints();
-		gbc_lblCompound.anchor = GridBagConstraints.WEST;
-		gbc_lblCompound.insets = new Insets(0, 0, 0, 5);
-		gbc_lblCompound.gridx = 1;
-		gbc_lblCompound.gridy = 8;
-		panel.add(lblCompound, gbc_lblCompound);
-		
-		textField_2 = new JTextField();
-		GridBagConstraints gbc_textField_2 = new GridBagConstraints();
-		gbc_textField_2.insets = new Insets(0, 0, 0, 5);
-		gbc_textField_2.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_2.gridx = 3;
-		gbc_textField_2.gridy = 8;
-		panel.add(textField_2, gbc_textField_2);
-		textField_2.setColumns(10);
 		
 		setDocType(panel);
 		
@@ -166,15 +147,21 @@ public class Document extends FrameType {
 		
 		JMenuItem mntmExport = new JMenuItem("Export Document");
 		mnFile.add(mntmExport);
+		mntmExport.setActionCommand("export");
+		mntmExport.addActionListener(this);
 		
 		JMenuItem mntmSave = new JMenuItem("Save");
 		mnFile.add(mntmSave);
+		mntmSave.setActionCommand("save");
+		mntmSave.addActionListener(this);
 		
 		JSeparator separator = new JSeparator();
 		mnFile.add(separator);
 		
 		JMenuItem mntmExit = new JMenuItem("Exit");
 		mnFile.add(mntmExit);
+		mntmExit.setActionCommand("exit");
+		mntmExit.addActionListener(this);
 		
 		JMenu mnView = new JMenu("Edit");
 		mnView.setMnemonic('E');
@@ -182,9 +169,13 @@ public class Document extends FrameType {
 		
 		JMenuItem mntmUndo = new JMenuItem("Undo");
 		mnView.add(mntmUndo);
+		mntmUndo.setActionCommand("undo");
+		mntmUndo.addActionListener(this);
 		
 		JMenuItem mntmShowRisks = new JMenuItem("Show Risks");
 		mnView.add(mntmShowRisks);
+		mntmShowRisks.setActionCommand("risks");
+		mntmShowRisks.addActionListener(this);
 		
 		return menuBar;
 	}
@@ -195,50 +186,123 @@ public class Document extends FrameType {
 	 * @param panel
 	 */
 	public void setDocType(JPanel panel) {
-		switch (documentType) {
-			case 0:
-				//Doc1
-				for (int i = 0; i < Config.COMPOUND_LIST[0].length; i++) {
-					//Create labels and text fields
+		for (int i = 0; i < Config.COMPOUND_LIST[documentType].length; i++) {
+			try {
+				Statement st = user.getConnection().getConnection().createStatement();
+				ResultSet rs = st.executeQuery("select CompoundName, MeasurementType from Compound where Com_ID = " + Config.COMPOUND_LIST[documentType][i]);
+				while (rs.next()) {
+					createCompoundGUI(panel, rs.getString(1), rs.getString(2), 9 + i, i);
 				}
-				break;
-				
-			case 1:
-				//Doc2
-				for (int i = 0; i < Config.COMPOUND_LIST[1].length; i++) {
-					//Create labels and text fields
-				}
-				break;
-				
-			case 2:
-				//Doc3
-				for (int i = 0; i < Config.COMPOUND_LIST[2].length; i++) {
-					//Create labels and text fields
-				}
-				break;
-				
-			case 3:
-				//Doc4
-				for (int i = 0; i < Config.COMPOUND_LIST[3].length; i++) {
-					//Create labels and text fields
-				}
-				break;
+				st.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
+	}
+	
+	public void createCompoundGUI(JPanel panel, String name, String measurement, int y, int i) {
+		compoundLabels[i] = new JLabel(name);
+		GridBagConstraints gbc_lblCompound = new GridBagConstraints();
+		gbc_lblCompound.anchor = GridBagConstraints.WEST;
+		gbc_lblCompound.insets = new Insets(0, 0, 5, 5);
+		gbc_lblCompound.gridx = 1;
+		gbc_lblCompound.gridy = y;
+		panel.add(compoundLabels[i], gbc_lblCompound);
+		
+		compoundFields[i] = new JTextField();
+		GridBagConstraints gbc_compoundFields = new GridBagConstraints();
+		gbc_compoundFields.insets = new Insets(0, 0, 5, 5);
+		gbc_compoundFields.fill = GridBagConstraints.HORIZONTAL;
+		gbc_compoundFields.gridx = 3;
+		gbc_compoundFields.gridy = y;
+		panel.add(compoundFields[i], gbc_compoundFields);
+		compoundFields[i].setColumns(10);
+		
+		JLabel lblMeasurement = new JLabel(measurement);
+		GridBagConstraints gbc_lblMeasurement = new GridBagConstraints();
+		gbc_lblMeasurement.anchor = GridBagConstraints.WEST;
+		gbc_lblMeasurement.insets = new Insets(0, 0, 5, 5);
+		gbc_lblMeasurement.gridx = 4;
+		gbc_lblMeasurement.gridy = y;
+		panel.add(lblMeasurement, gbc_lblMeasurement);
 	}
 
 	/**
-	 * Database stuff goes here
+	 * Action listoner stuff goes here
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
 			switch (e.getActionCommand()) {
-				//Switch through menu options
+				case "save":
+					if (patientField.getText().replaceAll("\\s+","").equals("")) {
+						sendWarningDialog("Error", "Please enter a patient name.");
+						return;
+					} else if (ssnField.getText().replaceAll("\\s+","").equals("")) {
+						sendWarningDialog("Error", "Please enter a patient name.");
+						return;
+					}
+					
+					for (int i = 0; i < compoundFields.length - 1; i++) {
+						if (compoundFields[i].getText().replaceAll("\\s+","").equals("")) {
+							sendWarningDialog("Error", "Please make sure all compounds have a value.");
+							return;
+						}
+						if (!isNumber(compoundFields[i].getText())) {
+							sendWarningDialog("Error", "Please make sure all compounds are numeric.");
+							return;
+						}
+					}
+					
+					Statement st = null;
+					ResultSet rs = null;
+					int docID = -1, userID = -1;
+					
+					/* Get the User_ID using the SSN */
+					st = user.getConnection().getConnection().createStatement();
+					rs = st.executeQuery("select User_ID from Users where SSN = " + ssnField.getText());
+					while (rs.next()) {
+						userID = rs.getInt(1);
+					}
+					rs.close();
+					st.close();
+					
+					if (userID == -1) {
+						sendWarningDialog("Error", "Please make sure the SSN value is correct, or the patient exists in the database.");
+						return;
+					}
+					
+					/* Create the new doc and get the docID */
+					CallableStatement cstmt =  user.getConnection().getConnection().prepareCall("{call newDoc(?, ?, ?)}");
+				    cstmt.registerOutParameter(1, java.sql.Types.INTEGER);
+					cstmt.setInt(2, user.getId());
+					cstmt.setString(3, ssnField.getText());
+				    cstmt.execute();
+				    docID = cstmt.getInt(1);
+				    cstmt.close();
+					
+					/* Add all of the new results for our new document */
+					for (int i = 0; i < compoundFields.length; i++) {
+						st = user.getConnection().getConnection().createStatement();
+						st.execute("exec newResult " + docID + ", " + userID + ", " + user.getId() + ", " + Integer.parseInt(compoundFields[i].getText()) + ", '" + compoundLabels[i].getText() + "'");
+						st.close();
+					}
+					break;
+				
+				case "export":
+					break;
+				
+				case "exit":
+					break;
+				
+				case "undo":
+					break;
+					
+				case "risks":
+					break;
 			}
-			//Statement st = user.getConnection().getConnection().createStatement();
-			//st.close();
 		} catch (SQLException e1) {//ignore
-			//sqlError(e1.getMessage());
+			e1.printStackTrace();
 		}
 	}
 }

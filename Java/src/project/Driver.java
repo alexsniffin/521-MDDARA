@@ -42,7 +42,7 @@ public class Driver {
         	//Setup our main gui window and pass user and connection
         	gui = new MainWindow(user, Config.NAME, new Dimension(800, 600)); 
         	
-        	//Set up a new thread to keep track of our session when the user connects with the database
+        	//Set up an anonymous new thread to keep track of our session when the user connects with the database
         	new Thread() {
         	    public void run() {
         	        while(true) {

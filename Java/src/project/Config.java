@@ -1,7 +1,7 @@
 package project;
 
 /**
- * Config file to hold static global variables 
+ * Config file to hold static immutable global variables 
  * 
  * @project 521_Project
  * @author Alexander Sniffin
@@ -29,18 +29,18 @@ public final class Config {
 	 */
 	public static final String ABOUT = 
 			"MDDARA is a tool used to view and detect anomalies for patient data \n"
-			+ "and inform the Doctor or Nurse of the risk. \n"
-			+ "Created by Alexander Sniffin, Devin _, William Craft";
+			+ "and inform the Doctor or Nurse of the risk. \n\n"
+			+ "Created by Alexander Sniffin, Devin LastName, William Craft";
 	
 	/**
 	 * Static immutable data to hold the IDS to each compound of each of the 4 files,
-	 * this data is fixed and won't be needed to change.
+	 * this data is fixed when inserted into the database and won't be needed to change.
 	 */
 	public static final int[][] COMPOUND_LIST = {
-			{0, 1, 3}, //Doc1
-			{4, 5, 6}, //Doc2
-			{7, 8, 9}, //Doc3
-			{10, 11, 12}  //Doc4
+			{0, 1, 2, 3, 4, 5, 6, 7}, //Doc1
+			{8, 9, 10}, //Doc2
+			{11, 12, 13, 14}, //Doc3
+			{15, 16, 17, 18, 19, 20}  //Doc4
 	};
 			
 }

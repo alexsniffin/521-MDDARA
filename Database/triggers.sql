@@ -1,5 +1,5 @@
-ALTER TRIGGER [dbo].[SeverityTrig]
-	ON [dbo].[Results]
+CREATE TRIGGER SeverityTrig
+	ON Results
 	AFTER INSERT, UPDATE
 	AS
 	Declare @patientID INT,

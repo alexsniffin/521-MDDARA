@@ -45,7 +45,7 @@ CREATE PROCEDURE loadDoc
 	@id INT
 AS 
 BEGIN
-SELECT u.Name, d.DateCreated, c.CompoundName, r.Result, c.MeasurementType, c.N_Range_Low, c.N_Range_High
+SELECT u.Name, c.CompoundName, r.Result, c.MeasurementType
 FROM Documents d, Results r, Compound c, Users u
 WHERE d.Document_ID = @id AND r.Document_ID = @id AND u.User_ID = d.Patient_ID AND r.Com_ID = c.Com_ID;
 END;
@@ -68,7 +68,7 @@ END;
 
 -- Create blank doc
 CREATE PROCEDURE newDoc
-	@documentID INT output, @doctorID INT, @SSN INT
+	@documentID INT output, @doctorID INT, @SSN INT, @documentType INT
 AS 
 BEGIN
 		SET NOCOUNT ON;
@@ -79,7 +79,7 @@ BEGIN
 			FROM Users u
 			WHERE u.SSN = @SSN);
 
-		INSERT INTO Documents VALUES (@doctorID, @patientID, @date);
+		INSERT INTO Documents VALUES (@doctorID, @patientID, @date, @documentType);
 
 		SELECT @documentID = SCOPE_IDENTITY();
 END;

@@ -378,7 +378,7 @@ public class CreatePatient extends FrameType {
 				sendWarningDialog("Error", "Please only enter a numeric value for weight.");
 			else {
 				success = true;
-				st.execute("execute dbo.NewPatient '"+ textField.getText() +"', '"+ add.getText() +"', "+ ssn.getText()+", "+ phone.getText()+", NULL, NULL, "
+				st.execute("execute dbo.NewPatient '"+ textField.getText() +"', '"+ add.getText() +"', "+ ssn.getText()+", "+ phone.getText()+", NULL, "
 					+ "'"+ genderSelected +"', "+ textField_1.getText() +", "+ textField_2.getText() +", '"+ raceSelected +"', '"+ textField_3.getText() +"',"
 					+ " '"+ textField_4.getText() +"', NULL");
 			}

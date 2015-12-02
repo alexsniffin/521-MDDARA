@@ -44,7 +44,7 @@ public class MainWindow extends JFrame {
 	private JDesktopPane desktop;
 	private JMenuBar menu;
 	private JMenu file, view, help, search, database;
-	private JMenuItem exit, about, connect, disconnect, switchUser, importFile, createPatient, createBlankDoc, saveAll, searchU, searchD, searchR;
+	private JMenuItem exit, about, connect, disconnect, importFile, createPatient, createBlankDoc, searchU, searchD, searchR;
 	private JLabel statusBar;
 	
 	/**
@@ -120,11 +120,9 @@ public class MainWindow extends JFrame {
 		exit = new JMenuItem("Exit", KeyEvent.VK_X);
 		connect = new JMenuItem("Connect to Database", KeyEvent.VK_C);
 		disconnect = new JMenuItem("Disconnect from the Database", KeyEvent.VK_D);
-		switchUser = new JMenuItem("Switch Account", KeyEvent.VK_S);
 		importFile = new JMenuItem("Import Document", KeyEvent.VK_I);
 		createPatient = new JMenuItem("Create New Patient", KeyEvent.VK_P);
 		createBlankDoc = new JMenuItem("Create Blank Document", KeyEvent.VK_B);
-		saveAll = new JMenuItem("Save All Documents", KeyEvent.VK_V);
 		
 		//VIEW
 		search = new JMenu("Search");
@@ -143,11 +141,9 @@ public class MainWindow extends JFrame {
 		exit.setToolTipText("Exit application");
 		connect.setToolTipText("Connect to the database");
 		disconnect.setToolTipText("Disconnect from the database");
-		switchUser.setToolTipText("Switch user account");
 		importFile.setToolTipText("Import a local file");
 		createPatient.setToolTipText("Create a new patient");
 		createBlankDoc.setToolTipText("Create a blank document");
-		saveAll.setToolTipText("Save all open documents");
 		
 		//VIEW
 		search.setToolTipText("Search given a specific field");
@@ -165,11 +161,9 @@ public class MainWindow extends JFrame {
 		exit.setActionCommand("exit");
 		connect.setActionCommand("connect");
 		disconnect.setActionCommand("disconnect");
-		switchUser.setActionCommand("switchUser");
 		importFile.setActionCommand("importFile");
 		createPatient.setActionCommand("createPatient");
 		createBlankDoc.setActionCommand("createBlankDoc");
-		saveAll.setActionCommand("saveAll");
 		
 		//VIEW
 		searchU.setActionCommand("searchU");
@@ -186,11 +180,9 @@ public class MainWindow extends JFrame {
 		about.addActionListener(new GuiActions());
 		connect.addActionListener(new GuiActions());
 		disconnect.addActionListener(new GuiActions());
-		switchUser.addActionListener(new GuiActions());
 		importFile.addActionListener(new GuiActions());
 		createPatient.addActionListener(new GuiActions());
 		createBlankDoc.addActionListener(new GuiActions());
-		saveAll.addActionListener(new GuiActions());
 		searchU.addActionListener(new GuiActions());
 		searchD.addActionListener(new GuiActions());
 		searchR.addActionListener(new GuiActions());
@@ -201,11 +193,9 @@ public class MainWindow extends JFrame {
 		file.add(database);
 		database.add(connect); //If connected don't display
 		database.add(disconnect); //If not connected don't display
-		database.add(switchUser); //Display only if logged in
 		database.addSeparator();
 		database.add(createPatient);
 		database.add(createBlankDoc);
-		database.add(saveAll); //Display only if logged in
 		file.addSeparator();
 		file.add(importFile);
 		file.addSeparator();
@@ -214,7 +204,7 @@ public class MainWindow extends JFrame {
 		view.add(search);
 		search.add(searchU);
 		search.add(searchD);
-		search.add(searchR);
+		//search.add(searchR);
 		
 		help.add(about);
 		
@@ -233,8 +223,6 @@ public class MainWindow extends JFrame {
 		createPatient.setEnabled(enabled);
 		createBlankDoc.setEnabled(enabled);
 		disconnect.setEnabled(enabled);
-		switchUser.setEnabled(enabled);
-		saveAll.setEnabled(enabled);
 		searchU.setEnabled(enabled);
 		searchD.setEnabled(enabled);
 		searchR.setEnabled(enabled);
@@ -322,12 +310,11 @@ public class MainWindow extends JFrame {
 					}
 					break;
 					
-				case "switchUser":
-					//Close connection with the database and create a Login GUI box
-					break;
-					
 				case "importFile":
 					//Load in a file using the file selection API, convert the format to the correct Document View
+					DocumentLoader doc = new DocumentLoader();
+					doc.loadFile();
+					createFrame(new Document(user, "Document #" + doc.getDocumentType() + "", 10, 10, 400, 500, 20, doc.getDocumentType(), doc.getSSN(), doc.getName(), doc.getCompoundName(), doc.getCompoundValue(), doc.getMeasurementType()));
 					break;
 					
 				case "createPatient":
@@ -343,16 +330,14 @@ public class MainWindow extends JFrame {
 					createFrame(new Document(user, "Blank Document", 10, 10, 400, 500, response));
 					break;
 					
-				case "saveAll":
-					//Save all open documents
-					break;
-					
 				case "searchU":
 					//Search for a user based on name
+					createFrame(new SearchUser(user, "Search for Patients in Database", 10, 10, 360, 360));
 					break;
 					
 				case "searchD":
 					//Search for a document
+					createFrame(new SearchDocument(user, "Search for Documents by Type", 10, 10, 400, 170, MainWindow.this));
 					break;
 					
 				case "searchR":

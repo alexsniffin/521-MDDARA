@@ -30,7 +30,7 @@ public final class Config {
 	public static final String ABOUT = 
 			"MDDARA is a tool used to view and detect anomalies for patient data \n"
 			+ "and inform the Doctor or Nurse of the risk. \n\n"
-			+ "Created by Alexander Sniffin, Devin LastName, William Craft";
+			+ "Created by Alexander Sniffin, Devin Clement, William Craft";
 	
 	/**
 	 * Static immutable data to hold the IDS to each compound of each of the 4 files,

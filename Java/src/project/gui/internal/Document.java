@@ -3,8 +3,6 @@ package project.gui.internal;
 import project.Config;
 import project.User;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -32,24 +30,63 @@ import javax.swing.JTextField;
  */
 public class Document extends FrameType {
 	
-	private int documentType;
+	private boolean blank;
+	private int documentType, ssn, docID;
+	private String username;
+	private String[] compoundNames, compoundMeasurements;
+	private int[] compoundValues, resultIDs;
 	private JTextField patientField;
 	private JTextField ssnField;
 	private JTextField[] compoundFields;
 	private JLabel[] compoundLabels;
 	
-
+	/**
+	 * Constructor for loading in an existing file from a local file or database
+	 * 
+	 * @param user
+	 * @param name
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param documentType
+	 */
+	public Document(User user, String name, int x, int y, int width, int height, int docID, int documentType, 
+			int ssn, String username, String [] compoundNames, int [] compoundValues, String [] compoundMeasurements) {
+		super(user, name, x, y, width, height);
+		this.docID = docID;
+		this.ssn = ssn;
+		this.username = username;
+		this.compoundNames = compoundNames;
+		this.compoundValues = compoundValues;
+		this.compoundMeasurements = compoundMeasurements;
+		this.documentType = documentType;
+		this.blank = false;
+        createComponants(blank);
+	}
+	
+	/**
+	 * Constructor for a blank document
+	 * 
+	 * @param user
+	 * @param name
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param documentType
+	 */
 	public Document(User user, String name, int x, int y, int width, int height, int documentType) {
 		super(user, name, x, y, width, height);
 		this.documentType = documentType;
-        createComponants();
+		this.blank = true;
+        createComponants(blank);
 	}
 
 	/**
 	 * All GUI stuff goes here
 	 */
-	@Override
-	public void createComponants() {
+	public void createComponants(boolean blank) {
 		compoundFields = new JTextField[Config.COMPOUND_LIST[documentType].length];
 		compoundLabels = new JLabel[Config.COMPOUND_LIST[documentType].length];
 		this.setJMenuBar(createMenu());
@@ -77,7 +114,7 @@ public class Document extends FrameType {
 		gbc_lblPatientInformation.gridy = 1;
 		panel.add(lblPatientInformation, gbc_lblPatientInformation);
 		
-		JLabel lblDate = new JLabel("Date...");
+		JLabel lblDate = new JLabel("Date: 11/"+ (((int) Math.random() * 30) + 1) + "/ 2015");
 		GridBagConstraints gbc_lblDate = new GridBagConstraints();
 		gbc_lblDate.anchor = GridBagConstraints.WEST;
 		gbc_lblDate.insets = new Insets(0, 0, 5, 5);
@@ -127,7 +164,15 @@ public class Document extends FrameType {
 		gbc_lblCompoundInformation.gridy = 6;
 		panel.add(lblCompoundInformation, gbc_lblCompoundInformation);
 		
-		setDocType(panel);
+		setDocType(panel, blank);
+		
+		if (!blank) {
+			patientField.setText(username);
+			ssnField.setText("" + ssn);
+			patientField.setEditable(false);
+			ssnField.setEditable(false);
+		}
+		
 		
 		this.add(panel);
 		
@@ -167,11 +212,6 @@ public class Document extends FrameType {
 		mnView.setMnemonic('E');
 		menuBar.add(mnView);
 		
-		JMenuItem mntmUndo = new JMenuItem("Undo");
-		mnView.add(mntmUndo);
-		mntmUndo.setActionCommand("undo");
-		mntmUndo.addActionListener(this);
-		
 		JMenuItem mntmShowRisks = new JMenuItem("Show Risks");
 		mnView.add(mntmShowRisks);
 		mntmShowRisks.setActionCommand("risks");
@@ -184,18 +224,24 @@ public class Document extends FrameType {
 	 * Set up the unique document types compounds
 	 * 
 	 * @param panel
+	 * @param blank 
 	 */
-	public void setDocType(JPanel panel) {
+	public void setDocType(JPanel panel, boolean blank) {
 		for (int i = 0; i < Config.COMPOUND_LIST[documentType].length; i++) {
-			try {
-				Statement st = user.getConnection().getConnection().createStatement();
-				ResultSet rs = st.executeQuery("select CompoundName, MeasurementType from Compound where Com_ID = " + Config.COMPOUND_LIST[documentType][i]);
-				while (rs.next()) {
-					createCompoundGUI(panel, rs.getString(1), rs.getString(2), 9 + i, i);
+			if (blank) {
+				try {
+					Statement st = user.getConnection().getConnection().createStatement();
+					ResultSet rs = st.executeQuery("select CompoundName, MeasurementType from Compound where Com_ID = " + Config.COMPOUND_LIST[documentType][i]);
+					while (rs.next()) {
+						createCompoundGUI(panel, rs.getString(1), rs.getString(2), 9 + i, i);
+					}
+					st.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
 				}
-				st.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
+			} else {
+				createCompoundGUI(panel, compoundNames[i], compoundMeasurements[i], 9 + i, i);
+				compoundFields[i].setText("" + compoundValues[i]);
 			}
 		}
 	}
@@ -235,74 +281,149 @@ public class Document extends FrameType {
 		try {
 			switch (e.getActionCommand()) {
 				case "save":
-					if (patientField.getText().replaceAll("\\s+","").equals("")) {
-						sendWarningDialog("Error", "Please enter a patient name.");
-						return;
-					} else if (ssnField.getText().replaceAll("\\s+","").equals("")) {
-						sendWarningDialog("Error", "Please enter a patient name.");
-						return;
-					}
-					
-					for (int i = 0; i < compoundFields.length - 1; i++) {
-						if (compoundFields[i].getText().replaceAll("\\s+","").equals("")) {
-							sendWarningDialog("Error", "Please make sure all compounds have a value.");
-							return;
+					if (user.getConnection().isConnected()) {
+						Statement st = null;
+						ResultSet rs = null;
+						
+						for (int i = 0; i < compoundFields.length - 1; i++) {
+							if (compoundFields[i] != null) {
+							if (compoundFields[i].getText().replaceAll("\\s+","").equals("")) {
+								sendWarningDialog("Error", "Please make sure all compounds have a value.");
+								return;
+							}
+							if (!isNumber(compoundFields[i].getText())) {
+								sendWarningDialog("Error", "Please make sure all compounds are numeric.");
+								return;
+							}
+							}
 						}
-						if (!isNumber(compoundFields[i].getText())) {
-							sendWarningDialog("Error", "Please make sure all compounds are numeric.");
-							return;
+						
+						if (blank) {
+							if (patientField.getText().replaceAll("\\s+","").equals("")) {
+								sendWarningDialog("Error", "Please enter a patient name.");
+								return;
+							} else if (ssnField.getText().replaceAll("\\s+","").equals("")) {
+								sendWarningDialog("Error", "Please enter a patient name.");
+								return;
+							}
+							
+							docID = -1;
+							int userID = -1;
+							
+							/* Get the User_ID using the SSN */
+							st = user.getConnection().getConnection().createStatement();
+							rs = st.executeQuery("select User_ID from Users where SSN = " + ssnField.getText());
+							while (rs.next()) {
+								userID = rs.getInt(1);
+							}
+							rs.close();
+							st.close();
+							
+							if (userID == -1) {
+								sendWarningDialog("Error", "Please make sure the SSN value is correct, or the patient exists in the database.");
+								return;
+							}
+							
+							/* Create the new doc and get the docID */
+							CallableStatement cstmt =  user.getConnection().getConnection().prepareCall("{call newDoc(?, ?, ?, ?)}");
+						    cstmt.registerOutParameter(1, java.sql.Types.INTEGER);
+							cstmt.setInt(2, user.getId());
+							cstmt.setString(3, ssnField.getText());
+							cstmt.setInt(4, documentType);
+						    cstmt.execute();
+						    docID = cstmt.getInt(1);
+						    cstmt.close();
+							
+							/* Add all of the new results for our new document */
+							for (int i = 0; i < compoundFields.length; i++) {
+								st = user.getConnection().getConnection().createStatement();
+								st.execute("exec newResult " + docID + ", " + userID + ", " + user.getId() + ", " + Integer.parseInt(compoundFields[i].getText()) + ", '" + compoundLabels[i].getText() + "'");
+								st.close();
+							}
+						} else {
+							/* Get all of the result ID's */
+							int[] resultIDSet = new int[Config.COMPOUND_LIST[documentType].length];
+							st = user.getConnection().getConnection().createStatement();
+							rs = st.executeQuery("select Result_ID from Results where Document_ID = " + docID + "");
+							int i = 0;
+							while (rs.next()) {
+								resultIDSet[i++] = rs.getInt(1);
+							}
+							rs.close();
+							st.close();
+							
+							for (int j = 0; j < compoundFields.length; j++) {
+								st = user.getConnection().getConnection().createStatement();
+								st.execute("exec saveResult " + resultIDSet[j] + ", " + Integer.parseInt(compoundFields[j].getText()));
+								st.close();
+							}
 						}
-					}
-					
-					Statement st = null;
-					ResultSet rs = null;
-					int docID = -1, userID = -1;
-					
-					/* Get the User_ID using the SSN */
-					st = user.getConnection().getConnection().createStatement();
-					rs = st.executeQuery("select User_ID from Users where SSN = " + ssnField.getText());
-					while (rs.next()) {
-						userID = rs.getInt(1);
-					}
-					rs.close();
-					st.close();
-					
-					if (userID == -1) {
-						sendWarningDialog("Error", "Please make sure the SSN value is correct, or the patient exists in the database.");
-						return;
-					}
-					
-					/* Create the new doc and get the docID */
-					CallableStatement cstmt =  user.getConnection().getConnection().prepareCall("{call newDoc(?, ?, ?)}");
-				    cstmt.registerOutParameter(1, java.sql.Types.INTEGER);
-					cstmt.setInt(2, user.getId());
-					cstmt.setString(3, ssnField.getText());
-				    cstmt.execute();
-				    docID = cstmt.getInt(1);
-				    cstmt.close();
-					
-					/* Add all of the new results for our new document */
-					for (int i = 0; i < compoundFields.length; i++) {
-						st = user.getConnection().getConnection().createStatement();
-						st.execute("exec newResult " + docID + ", " + userID + ", " + user.getId() + ", " + Integer.parseInt(compoundFields[i].getText()) + ", '" + compoundLabels[i].getText() + "'");
-						st.close();
+					} else {
+						sendWarningDialog("Error", "Please connect with the Database to save this file. \n"
+								+ "To save locally, use the export option.");
 					}
 					break;
 				
 				case "export":
+					
 					break;
 				
 				case "exit":
-					break;
-				
-				case "undo":
+					setVisible(false);
+					dispose();
 					break;
 					
 				case "risks":
+					//<html><span bgcolor=\"yellow\">This is the label text</span></html>
+					int[] comids = new int[50];
+					int[] severity = new int[50];
+					
+					Statement st = null;
+					ResultSet rs = null;
+					
+					//return compundid and severity 
+					
+					st = user.getConnection().getConnection().createStatement();
+					rs = st.executeQuery("select Com_ID, Severity from Risks where Document_ID = " + docID + " and Doctor_ID = " + user.getId());
+					int i = 0;
+					while (rs.next()) {
+						comids[i] = rs.getInt(1);
+						
+						severity[i] = rs.getInt(2);//System.out.println(comids[i] + ", " + severity[i]);
+					}
+					rs.close();
+					st.close();
+					
+					String[] comNames = new String[50];
+					for (int j = 0; j < comids.length; j++) {
+						st = user.getConnection().getConnection().createStatement();
+						rs = st.executeQuery("select CompoundName from Compound where Com_ID = " + comids[j]);
+						while (rs.next()) {
+							comNames[j] = rs.getString(1);
+							//System.out.println(comNames[j]);
+						}
+						rs.close();
+						st.close();
+					}
+					
+					for (int k = 0; k < compoundLabels.length; k++) {
+						for (int q = 0; q < comNames.length; q++) {
+							//System.out.println(compoundLabels[k].getText() + ", " + comNames[q]);
+							if (compoundLabels[k].getText().equals(comNames[q])) {
+								compoundLabels[k].setText("<html><span bgcolor=\"yellow\">"+compoundLabels[k].getText() +"</span></html>");
+							}
+						}
+					}
 					break;
 			}
 		} catch (SQLException e1) {//ignore
 			e1.printStackTrace();
 		}
+	}
+
+	@Override
+	public void createComponants() {
+		// TODO Auto-generated method stub
+		
 	}
 }
